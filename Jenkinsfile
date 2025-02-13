@@ -14,14 +14,16 @@ pipeline {
         }
 
         stage('Docker Login') {
-            steps {
-                script {
-                    withCredentials([string(credentialsId: 'dhubcd', variable: 'DOCKER_PASSWORD')]) {
-                        bat "echo ${DOCKER_PASSWORD} | docker login -u srinidhii09 --password-stdin"
-                    }
-                }
+    steps {
+        script {
+            withCredentials([usernamePassword(credentialsId: 'dhubcd', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                bat "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USER} --password-stdin"
             }
         }
+    }
+}
+
+
 
         stage('Build Docker Image') {
             steps {
