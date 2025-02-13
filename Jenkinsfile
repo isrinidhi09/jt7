@@ -34,12 +34,17 @@ pipeline {
         }
 
         stage('Run Container') {
-            steps {
-                script {
-                    bat "docker run -d -p 5001:5000 --name ${CONTAINER_NAME} ${IMAGE_NAME}"
-                }
-            }
+    steps {
+        script {
+            bat """
+                docker stop flask-container || echo "No container running"
+                docker rm flask-container || echo "No container to remove"
+                docker run -d -p 5001:5000 --name flask-container flask-app
+            """
         }
+    }
+}
+
 
         stage('Cleanup') {
             steps {
