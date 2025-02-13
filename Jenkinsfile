@@ -36,7 +36,7 @@ pipeline {
         stage('Run Container') {
             steps {
                 script {
-                    bat "docker run -d -p 5000:5000 --name ${CONTAINER_NAME} ${IMAGE_NAME}"
+                    bat "docker run -d -p 5001:5000 --name ${CONTAINER_NAME} ${IMAGE_NAME}"
                 }
             }
         }
