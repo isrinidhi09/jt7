@@ -9,14 +9,24 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/isrinidhi09/jt7.git'
+                git branch: 'main', url: 'https://github.com/isrinidhi09/jt7.git'
+            }
+        }
+
+        stage('Docker Login') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'docker-hub-credentials', variable: 'dhubcd')]) {
+                        bat "echo %DOCKER_PASSWORD% | docker login -u srinidhii09 --Iamsocool0910#-stdin"
+                    }
+                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker build -t ${IMAGE_NAME} ."
+                    bat "docker build -t %IMAGE_NAME% ."
                 }
             }
         }
@@ -24,7 +34,7 @@ pipeline {
         stage('Run Container') {
             steps {
                 script {
-                    sh "docker run -d -p 5000:5000 --name ${CONTAINER_NAME} ${IMAGE_NAME}"
+                    bat "docker run -d -p 5000:5000 --name %CONTAINER_NAME% %IMAGE_NAME%"
                 }
             }
         }
@@ -32,8 +42,8 @@ pipeline {
         stage('Cleanup') {
             steps {
                 script {
-                    sh "docker rm -f ${CONTAINER_NAME} || true"
-                    sh "docker rmi -f ${IMAGE_NAME} || true"
+                    bat "docker rm -f %CONTAINER_NAME% || echo 'Container not found'"
+                    bat "docker rmi -f %IMAGE_NAME% || echo 'Image not found'"
                 }
             }
         }
